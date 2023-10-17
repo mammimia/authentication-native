@@ -1,14 +1,16 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useContext, useEffect, useState } from 'react';
+import IconButton from './components/ui/IconButton';
+import LoadingOverlay from './components/ui/LoadingOverlay';
 import { Colors } from './constants/styles';
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import AuthContextProvider, { AuthContext } from './store/AuthContext';
-import { useContext } from 'react';
-import IconButton from './components/ui/IconButton';
 
 const Stack = createStackNavigator();
 
@@ -63,6 +65,24 @@ function Navigation() {
     </NavigationContainer>
   );
 }
+function Root() {
+  const [isReady, setIsReady] = useState(false);
+  const authContext = useContext(AuthContext);
+
+  useEffect(() => {
+    async function fetchToken() {
+      const token = await AsyncStorage.getItem('token');
+      if (token) authContext.authenticate(token);
+      setIsReady(true);
+    }
+
+    fetchToken();
+  }, []);
+
+  if (!isReady) return <LoadingOverlay />;
+
+  return <Navigation />;
+}
 
 export default function App() {
   return (
@@ -70,7 +90,7 @@ export default function App() {
       <StatusBar style="light" />
 
       <AuthContextProvider>
-        <Navigation />
+        <Root />
       </AuthContextProvider>
     </>
   );
