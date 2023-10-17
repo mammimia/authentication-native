@@ -15,7 +15,7 @@ function AuthStack() {
       screenOptions={{
         headerStyle: { backgroundColor: Colors.primary500 },
         headerTintColor: 'white',
-        contentStyle: { backgroundColor: Colors.primary100 }
+        cardStyle: { backgroundColor: Colors.primary50 }
       }}
     >
       <Stack.Screen name="Login" component={LoginScreen} />
