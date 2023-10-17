@@ -10,16 +10,16 @@ async function authenticate(mode, email, password) {
       returnSecureToken: true
     }
   );
-  return response.data;
+
+  return response.data.idToken; // token
 }
 
-async function loginUser(email, password) {
-  const response = await authenticate('signInWithPassword', email, password);
-  return response;
+function loginUser(email, password) {
+  return authenticate('signInWithPassword', email, password);
 }
 
-async function createUser(email, password) {
-  await authenticate('signUp', email, password);
+function createUser(email, password) {
+  return authenticate('signUp', email, password);
 }
 
 export default {

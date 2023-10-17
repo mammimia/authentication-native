@@ -1,17 +1,20 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import AuthContent from '../components/Auth/AuthContent';
 import AuthService from '../services/AuthService';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 import { Alert } from 'react-native';
+import { AuthContext } from '../store/AuthContext';
 
 function SignupScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const authContext = useContext(AuthContext);
 
   async function signupHandler({ email, password }) {
     setIsLoading(true);
     try {
-      await AuthService.createUser(email, password);
+      const token = await AuthService.createUser(email, password);
+      authContext.authenticate(token);
     } catch (error) {
       setError(error.message);
     } finally {
